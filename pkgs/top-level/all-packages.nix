@@ -508,6 +508,7 @@ with pkgs;
     buildDotnetGlobalTool
     mkNugetSource
     mkNugetDeps
+    autoPatchcilHook
     ;
 
   fable = callPackage ../development/tools/fable { };
@@ -1371,6 +1372,10 @@ with pkgs;
   datalad = with python3Packages; toPythonApplication datalad;
 
   datalad-gooey = with python3Packages; toPythonApplication datalad-gooey;
+
+  forgejo = callPackage ../by-name/fo/forgejo/package.nix {
+    buildGoModule = buildGo124Module;
+  };
 
   forgejo-lts = callPackage ../by-name/fo/forgejo/lts.nix { };
 
@@ -3811,8 +3816,6 @@ with pkgs;
     inherit (darwin) autoSignDarwinBinariesHook;
   };
 
-  fastlane = callPackage ../tools/admin/fastlane { };
-
   fontforge = lowPrio (
     callPackage ../tools/misc/fontforge {
       inherit (darwin.apple_sdk.frameworks) Carbon Cocoa;
@@ -4071,10 +4074,6 @@ with pkgs;
 
   gptcommit = callPackage ../development/tools/gptcommit {
     inherit (darwin.apple_sdk.frameworks) Security SystemConfiguration;
-  };
-
-  gpredict = callPackage ../applications/science/astronomy/gpredict {
-    hamlib = hamlib_4;
   };
 
   gprof2dot = with python3Packages; toPythonApplication gprof2dot;
@@ -4598,8 +4597,6 @@ with pkgs;
   matrix-appservice-discord = callPackage ../servers/matrix-appservice-discord { };
 
   maubot = with python3Packages; toPythonApplication maubot;
-
-  mautrix-signal = recurseIntoAttrs (callPackage ../servers/mautrix-signal { });
 
   mautrix-telegram = recurseIntoAttrs (callPackage ../servers/mautrix-telegram { });
 
@@ -5271,8 +5268,6 @@ with pkgs;
   ovito = qt6Packages.callPackage ../applications/graphics/ovito {
     inherit (darwin.apple_sdk.frameworks) VideoDecodeAcceleration;
   };
-
-  oxidized = callPackage ../tools/admin/oxidized { };
 
   p4c = callPackage ../development/compilers/p4c {
     protobuf = protobuf_21;
@@ -12604,6 +12599,11 @@ with pkgs;
     go = buildPackages.go_1_23;
   };
 
+  go_1_24 = callPackage ../development/compilers/go/1.24.nix { };
+  buildGo124Module = callPackage ../build-support/go/module.nix {
+    go = buildPackages.go_1_24;
+  };
+
   ### DEVELOPMENT / HARE
 
   hareHook = callPackage ../by-name/ha/hare/hook.nix { };
@@ -14702,10 +14702,6 @@ with pkgs;
   scheherazade = callPackage ../data/fonts/scheherazade { version = "2.100"; };
 
   scheherazade-new = callPackage ../data/fonts/scheherazade { };
-
-  starship = callPackage ../tools/misc/starship {
-    inherit (darwin.apple_sdk.frameworks) Security Foundation Cocoa;
-  };
 
   inherit (callPackages ../data/fonts/gdouros { })
     aegan
@@ -18124,7 +18120,7 @@ with pkgs;
 
   webcord = callPackage ../by-name/we/webcord/package.nix { electron = electron_33; };
 
-  webcord-vencord = callPackage ../by-name/we/webcord-vencord/package.nix { electron = electron_33; };
+  webcord-vencord = callPackage ../by-name/we/webcord-vencord/package.nix { electron = electron_34; };
 
   webmacs = libsForQt5.callPackage ../applications/networking/browsers/webmacs {
     stdenv = if stdenv.cc.isClang then gccStdenv else stdenv;
@@ -20310,8 +20306,6 @@ with pkgs;
   lima-bin = callPackage ../applications/virtualization/lima/bin.nix { };
 
   image_optim = callPackage ../applications/graphics/image_optim { inherit (nodePackages) svgo; };
-
-  itamae = callPackage ../tools/admin/itamae { };
 
   # using the new configuration style proposal which is unstable
   jack1 = callPackage ../misc/jackaudio/jack1.nix { };
